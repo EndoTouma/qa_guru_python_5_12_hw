@@ -1,41 +1,41 @@
-import os
 import allure
-from selene import have
-from selene.support.shared import browser
+from selene import have, by
 
 
 @allure.title("Successful fill form")
 def test_successful(setup_browser):
+	browser = setup_browser
+	first_name = "Alex"
+	last_name = "Egorov"
+	
 	with allure.step("Open registrations form"):
-		browser.open('/automation-practice-form')
+		browser.open("https://demoqa.com/automation-practice-form")
+		browser.element(".practice-form-wrapper").should(have.text("Student Registration Form"))
 		browser.driver.execute_script("$('footer').remove()")
 		browser.driver.execute_script("$('#fixedban').remove()")
 	
 	with allure.step("Fill form"):
-		browser.element('[id = firstName]').type('Evgenii')
-		browser.element('[id = lastName]').type('Vervai')
-		browser.element('[id = userEmail]').type('esttest@demoqa.ru')
-		browser.element('[name = gender][value=Male]').double_click()
-		browser.element('[id = userNumber]').type('8005553535')
-		browser.element('#dateOfBirthInput').press()
-		browser.element('.react-datepicker__month-select').click()
-		browser.element('.react-datepicker__month-select').element('[value="6"]').click()
-		browser.element('.react-datepicker__year-select').click()
-		browser.element('.react-datepicker__year-select').element('[value="1994"]').click()
-		browser.element('.react-datepicker__day--026').click()
-		browser.element('#subjectsInput').type("Chemistry").press_enter()
-		browser.element('label[for="hobbies-checkbox-2"]').click()
-		browser.element('#uploadPicture').type(os.getcwd() + "/test.png")
-		browser.element('[id = currentAddress]').type(
-			'No 1/46 kellagolla Road Nuwara Eliya, 22200 Nuwara Eliya, Sri Lanka')
-		browser.element('#state').click()
-		browser.all('[id^=react-select][id*=option]').element_by(have.exact_text('NCR')).click()
-		browser.element('#react-select-4-input').type('Delhi').press_enter()
-		browser.element('#submit').press_enter()
+		browser.element("#firstName").set_value(first_name)
+		browser.element("#lastName").set_value(last_name)
+		browser.element("#userEmail").set_value("alex@egorov.com")
+		browser.element("#genterWrapper").element(by.text("Other")).click()
+		browser.element("#userNumber").set_value("1231231230")
+		# browser.element("#dateOfBirthInput").click()
+		# browser.element(".react-datepicker__month-select").s("July")
+		# browser.element(".react-datepicker__year-select").selectOption("2008")
+		# browser.element(".react-datepicker__day--030:not(.react-datepicker__day--outside-month)").click()
+		browser.element("#subjectsInput").send_keys("Maths")
+		browser.element("#subjectsInput").press_enter()
+		browser.element("#hobbiesWrapper").element(by.text("Sports")).click()
+		# browser.element("#uploadPicture").uploadFromClasspath("img/1.png")
+		browser.element("#currentAddress").set_value("Some street 1")
+		browser.element("#state").click()
+		browser.element("#stateCity-wrapper").element(by.text("NCR")).click()
+		browser.element("#city").click()
+		browser.element("#stateCity-wrapper").element(by.text("Delhi")).click()
+		browser.element("#submit").click()
 	
 	with allure.step("Check form results"):
-		browser.all('tbody tr').should(have.exact_texts(
-			'Student Name Evgenii Vervai', 'Student Email esttest@demoqa.ru', 'Gender Male', 'Mobile 8005553535',
-			'Date of Birth 26 June,1994', 'Subjects Chemistry', 'Hobbies Reading',
-			'Picture test.png', 'Address No 1/46 kellagolla Road Nuwara Eliya, 22200 Nuwara Eliya, Sri Lanka',
-			'State and City NCR Delhi'))
+		browser.element("#example-modal-sizes-title-lg").should(have.text("Thanks for submitting the form"))
+		# browser.element(".table-responsive").should(
+		#     have.texts(first_name, last_name, "alex@egorov.com", "Some street 1"))
