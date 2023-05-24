@@ -27,7 +27,8 @@ def load_env():
 def setup_browser(request):
     browser_version = request.config.getoption('--browser_version')
     browser_version = browser_version if browser_version != "" else DEFAULT_BROWSER_VERSION
-    options = Options()
+    options = ChromeOptions()
+    options.add_argument("--start-maximized")
     selenoid_capabilities = {
         "browserName": "chrome",
         "browserVersion": browser_version,
